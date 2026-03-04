@@ -1,0 +1,12 @@
+node_modules
+.next
+.env
+.env.*
+.git
+.gitignore
+README.md
+CLAUDE.md
+.dockerignore
+Dockerfile
+.claude
+cloudbuild.yaml

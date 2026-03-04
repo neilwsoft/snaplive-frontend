@@ -1,0 +1,56 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - '--build-arg=NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL'
+      - '--build-arg=GEMINI_API_KEY=$_GEMINI_API_KEY'
+      - .
+    id: Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+    id: Push
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - '--platform=managed'
+      - >-
+        --image=$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - >-
+        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
+      - '--region=$_DEPLOY_REGION'
+      - '--quiet'
+      - >-
+        --update-env-vars=NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL,GEMINI_API_KEY=$_GEMINI_API_KEY
+    id: Deploy
+    entrypoint: gcloud
+timeout: 1800s
+images:
+  - >-
+    $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+options:
+  machineType: E2_HIGHCPU_8
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _AR_HOSTNAME: asia-northeast3-docker.pkg.dev
+  _AR_PROJECT_ID: vertex-ai-developer
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _SERVICE_NAME: snaplive-frontend
+  _DEPLOY_REGION: asia-northeast3
+  _TRIGGER_ID: YOUR_TRIGGER_ID
+  _PLATFORM: managed
+  _NEXT_PUBLIC_API_URL: YOUR_PRODUCTION_API_URL
+  _GEMINI_API_KEY: YOUR_GEMINI_API_KEY
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - snaplive-frontend

@@ -1,0 +1,38 @@
+
+> snaplive-frontend@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/kio/Developer/snaplive/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/kio/Developer/snaplive/snaplive-frontend/pnpm-lock.yaml
+
+   ▲ Next.js 16.0.1 (Turbopack)
+   - Environments: .env.local
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled successfully in 1915.3ms
+   Running TypeScript ...
+Failed to compile.
+
+./app/dashboard/livecam/presets/page.tsx:72:31
+Type error: Argument of type '(backend: BackendPreset) => SimulcastPreset' is not assignable to parameter of type '(value: SimulcastPreset, index: number, array: SimulcastPreset[]) => SimulcastPreset'.
+  Types of parameters 'backend' and 'value' are incompatible.
+    Type 'SimulcastPreset' is not assignable to type 'BackendPreset'.
+      Types of property 'platforms' are incompatible.
+        Type 'PlatformConfig[]' is not assignable to type '{ platform: string; }[]'.
+          Property 'platform' is missing in type 'PlatformConfig' but required in type '{ platform: string; }'.
+
+[0m [90m 70 |[39m   [90m// Transform presets to frontend format[39m
+ [90m 71 |[39m   [36mconst[39m transformedPresets [33m=[39m useMemo(() [33m=>[39m {
+[31m[1m>[22m[39m[90m 72 |[39m     [36mreturn[39m backendPresets[33m.[39mmap(transformPreset)[33m;[39m
+ [90m    |[39m                               [31m[1m^[22m[39m
+ [90m 73 |[39m   }[33m,[39m [backendPresets])[33m;[39m
+ [90m 74 |[39m
+ [90m 75 |[39m   [90m// Filter presets by search query[39m[0m
+Next.js build worker exited with code: 1 and signal: null
