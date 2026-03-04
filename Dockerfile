@@ -4,11 +4,12 @@
 FROM node:20-alpine AS base
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # ---- Dependencies stage ----
 FROM base AS dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # ---- Build stage ----
 FROM base AS build
@@ -23,7 +24,7 @@ ENV GEMINI_API_KEY=${GEMINI_API_KEY}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-RUN npm run build
+RUN pnpm run build
 
 # ---- Production stage ----
 FROM base AS production
